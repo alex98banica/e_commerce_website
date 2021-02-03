@@ -1,0 +1,69 @@
+
+{ "_id" :
+	"select_mixere", "value" : { "code" :
+		"function (){var cursor=db.mixere.find({}).toArray();return cursor;}" } }
+	
+	
+{ "_id" :
+	"select_boxe", "value" : { "code" :
+		"function (){var cursor=db.boxe.find({}).toArray();return cursor;}" } }
+		
+		
+{ "_id" :
+	"select_amplificatoare", "value" : { "code" :
+		"function (){var cursor=db.amplificatoare.find({}).toArray();return cursor;}" } }
+		
+		
+{ "_id" :
+	"select_casti","value" : { "code" :
+		"function (){var cursor=db.casti.find({}).toArray();return cursor;}" } }
+		
+		
+{ "_id" :
+	"select_microfoane", "value" : { "code" :
+		"function (){var cursor=db.microfoane.find({}).toArray();return cursor;}" } }
+	
+	
+
+ 
+{ "_id" :
+	"casti_filter", "value" : { "code" :
+		"function (sensibilitate,pret){var cursor=db.casti.find({$and:[{\"casti_sensibilitate\":{$gt:sensibilitate}}
+		,{\"casti_pret\":{$lt:pret}}]}).toArray();return cursor;}" } }
+ 
+ 
+ 
+{ "_id" : 
+	"map_functie_putere", "value" : { "code" :
+		"function (){var pret =1; var nume = this.boxe_putere; emit(nume,pret);}" } }
+ 
+
+ 
+{ "_id" :
+	"map_red", "value" : { "code" :
+		"function (){var map_func = function(){var pret = 1; var nume =this.boxe_putere;
+		emit(nume,pret);}; 
+		var red_func = function(key,value){return Array.sum(value);};
+		var map=db.boxe.mapReduce(map_func,{query:{},out:\"out\"});
+		var cursor=db.out.find({}).toArray();return cursor;}" } }
+
+
+{ "_id" :
+	"red_func", "value" : { "code" :
+		"function (key,value){return Array.sum(value);}" } }
+ 
+ 
+{ "_id" :
+	"reduction", "value" : { "code" :
+		"function (){var curs = db.boxe.mapReduce(map_functie_putere,red_func,
+		{query:{},out:\"output\"});var cursor = db.out.find({}).toArray(); return cursor;}" } }
+ 
+
+ 
+{ "_id" :
+	"nr_total", "value" : { "code" :
+		"function (){var s1 = db.boxe.find({}).count();var s2 = db.amplificatoare.find({}).count();
+		var s3 = db.casti.find({}).count();var s4= db.microfoane.find({}).count();
+		var s5 = db.mixere.find({}).count(); return s1+s2+s3+s4+s5;}" } }
+		
+		
